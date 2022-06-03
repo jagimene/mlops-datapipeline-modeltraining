@@ -1,7 +1,7 @@
 import aws_cdk as core
 import aws_cdk.assertions as assertions
 
-from cdk.datapipeline_modeltraining_stack import DatapipelineModeltrainingStack
+from datapipeline_modeltraining.datapipeline_modeltraining_stack import DatapipelineModeltrainingStack
 
 # example tests. To run these tests, uncomment this file along with the example
 # resource in datapipeline_modeltraining/datapipeline_modeltraining_stack.py

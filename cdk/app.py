@@ -3,7 +3,7 @@ import os
 
 import aws_cdk as cdk
 
-from cdk.datapipeline_modeltraining_stack import DatapipelineModeltrainingStack
+from datapipeline_modeltraining.datapipeline_modeltraining_stack import DatapipelineModeltrainingStack
 
 
 app = cdk.App()
