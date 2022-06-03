@@ -1,0 +1,18 @@
+projectName: mlops-data-modeltraining-dev 
+
+pipeline:
+    name: mlops-data-modeltraining-pipeline
+    github:
+      owner: "jagimene"
+      repo: "mlops-datapipeline-modeltraining"
+      branch: "dev"
+
+stack:
+    name: mlops-datapipeline-modeltrain-Stack
+    tags:
+        - key: project
+          value: mlops_challenge
+        - key: owners
+          value: jesusariel.gimenez@gmail.com
+        - key: environment
+          value: dev
