@@ -32,12 +32,12 @@ class PipelineStack(Stack):
                     )
                 )
 
-        test_stage = PipelineStage(self, "Deploy-Dev", "dev")
+        dev_stage = PipelineStage(self, "Deploy-Dev", "dev")
         prod_stage = PipelineStage(self, "Deploy-Prod", "prod")
 
-        deploy_test = pipeline.add_stage(test_stage) #stage deploy
+        deploy_dev = pipeline.add_stage(dev_stage) #stage deploy
         deploy_prod = pipeline.add_stage(prod_stage)        
         
-        deploy_prod.add_pre(
+        deploy_dev.add_post(
             pipelines.ManualApprovalStep("PromoteToProd")
         )
