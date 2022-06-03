@@ -28,7 +28,7 @@ class PipelineStack(Stack):
                         input=pipelines.CodePipelineSource.git_hub(f"{github_owner}/{github_repo}", github_branch),
                         commands=[
                             "npm install -g aws-cdk", # Installs the cdk cli on Codebuild
-                            "python -m pip install -r requirements.txt", # Install required packages
+                            "python -m pip install -r cdk/requirements.txt", # Install required packages
                             "cdk synth", #python                            
                         ]
                     )
