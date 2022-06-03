@@ -3,26 +3,15 @@ import os
 
 import aws_cdk as cdk
 
-from datapipeline_modeltraining.datapipeline_modeltraining_stack import DatapipelineModeltrainingStack
+from datapipeline_modeltraining.pipeline_stack import PipelineStack
+from project_environment import ProjectEnvironment
 
 
+project_enviroment = ProjectEnvironment()
+#config_enviroment = project_enviroment.configurations
+#print (config_enviroment['stack']['name'], config_enviroment, config_enviroment['pipeline']) #debug
 app = cdk.App()
-DatapipelineModeltrainingStack(app, "DatapipelineModeltrainingStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
-
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
-
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
-
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
-
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+pipeline = PipelineStack(app, project_enviroment.configurations['pipeline']['name'], project_enviroment.configurations['pipeline'])
+pipeline.deploy_pipeline()
 
 app.synth()
