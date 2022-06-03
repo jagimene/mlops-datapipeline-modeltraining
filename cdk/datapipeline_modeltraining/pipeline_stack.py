@@ -9,9 +9,7 @@ class PipelineStack(Stack):
     def __init__(self, scope: Construct, id: str, config_pipeline: dict, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         
-        self.config_enviroment = config_pipeline
-        
-             
+        self.config_enviroment = config_pipeline            
        
     #Create base pipeline
     def deploy_pipeline(self):
