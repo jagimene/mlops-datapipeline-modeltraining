@@ -3,7 +3,7 @@ from aws_cdk import (
     Stage
 )
 from .datapipeline_modeltraining_stack import DatapipelineModeltrainingStack
-from project_environment import ProjectEnvironment
+from .project_environment import ProjectEnvironment
 
 class PipelineStage(Stage):
 

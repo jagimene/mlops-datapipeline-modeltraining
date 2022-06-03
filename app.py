@@ -3,8 +3,8 @@ import os
 
 import aws_cdk as cdk
 
-from datapipeline_modeltraining.pipeline_stack import PipelineStack
-from project_environment import ProjectEnvironment
+from cdk.pipeline_stack import PipelineStack
+from cdk.project_environment import ProjectEnvironment
 
 
 project_enviroment = ProjectEnvironment()
