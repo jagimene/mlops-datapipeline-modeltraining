@@ -16,3 +16,18 @@ stack:
           value: jesusariel.gimenez@gmail.com
         - key: environment
           value: dev
+
+glue:
+    bucket_artifact:
+      name: artifact
+    bucket_data:
+      name: data
+    database_ml:
+      name: ml_db
+    crawler_features:
+      name: fe_risk
+      s3Path: tables/fe_risk
+      tablePrefix: null  
+      exclusions: null  
+      scheduleExpression: null  
+      configuration: null
