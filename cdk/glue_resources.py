@@ -31,7 +31,14 @@ class GlueResources(Construct):
                             block_public_access=s3.BlockPublicAccess.BLOCK_ALL)
         arn_bucket_data = bucket_data.bucket_arn
 
-        return (arn_bucket_artifact, arn_bucket_data, bucket_data)                            
+        return (arn_bucket_artifact, arn_bucket_data, bucket_data)
+
+    def create_db(self):
+        db_name = self.configurations['glue']['database_ml']['name']
+        ml_db = glue.Database(self, 
+                    "Database_ML",
+                    database_name=db_name )
+        return ml_db
 
     def create_glue_role(self):
         write_to_s3_policy = iam.PolicyDocument(
@@ -58,7 +65,7 @@ class GlueResources(Construct):
         create_gule_crawler = glue.CfnCrawler(
             self, f'glue-crawler-{crawler_name}',
             description=f"Glue Crawler for {database_name} {crawler_name}",
-            name=f'{self.project_name}',
+            name=f'{crawler_name}',
             database_name=database_name,
             #schedule={"scheduleExpression": "cron(5 * * * ? *)"},
             role=self._glue_crawler_role.role_arn,
@@ -69,4 +76,5 @@ class GlueResources(Construct):
     def deploy(self):
         self._arn_bucket_artifact, self._arn_bucket_data, self._bucket_data= self.create_buckets()
         self._glue_crawler_role = self.create_glue_role()
+        self.create_db()
         self.create_glue_crawler()
