@@ -35,17 +35,18 @@ class GlueResources(Construct):
         return (arn_bucket_artifact, arn_bucket_data, bucket_data)
 
     def create_db(self):
-        db_name = self.configurations['glue']['database_ml']['name']
+        db_name = f"{self.project_name}_{self.configurations['glue']['database_ml']['name']}"
 
         ml_db = glue.CfnDatabase(
             self,
             id=db_name,
             catalog_id=account,
             database_input=glue.CfnDatabase.DatabaseInputProperty(
-                description=f"Glue database '{self.project_name}_{db_name}'",
+                description=f"Glue database '{db_name}'",
                 name=db_name,
             )
         )
+        return ml_db
 
     def create_glue_role(self):
         write_to_s3_policy = iam.PolicyDocument(
@@ -64,8 +65,8 @@ class GlueResources(Construct):
         return role
     
     def create_glue_crawler(self):
-        crawler_name = self.configurations['glue']['crawler_features']['name']
-        database_name = self.configurations['glue']['database_ml']['name']
+        crawler_name = f"{self.project_name}_{self.configurations['glue']['crawler_features']['name']}"
+        database_name = f"{self.project_name}_{self.configurations['glue']['database_ml']['name']}"
         bucket_name = self._bucket_data.bucket_name
         prefix = self.configurations['glue']['crawler_features']['s3Path']
         
