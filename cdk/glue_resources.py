@@ -1,9 +1,10 @@
-from ast import arg
 from aws_cdk import (
+    Aws,
     aws_iam as iam,
     aws_glue as glue,
     aws_s3 as s3,    
 )  
+account = Aws.ACCOUNT_ID
 from constructs import Construct  
 
 class GlueResources(Construct):
@@ -35,10 +36,16 @@ class GlueResources(Construct):
 
     def create_db(self):
         db_name = self.configurations['glue']['database_ml']['name']
-        ml_db = glue.Database(self, 
-                    "Database_ML",
-                    database_name=db_name )
-        return ml_db
+
+        ml_db = glue.CfnDatabase(
+            self,
+            id=db_name,
+            catalog_id=account,
+            database_input=glue.CfnDatabase.DatabaseInputProperty(
+                description=f"Glue database '{self.project_name}_{db_name}'",
+                name=db_name,
+            )
+        )
 
     def create_glue_role(self):
         write_to_s3_policy = iam.PolicyDocument(
