@@ -16,6 +16,7 @@ class PipelineStage(Stage):
 
 
     def deploy_stack(self):
-        stack = DatapipelineModeltrainingStack(self, self.config_enviroment['stack']['name']) #Stack app
+        stack = DatapipelineModeltrainingStack(self, self.config_enviroment['stack']['name'], self.config_enviroment) #Stack app
+        stack.deploy()
 
        
