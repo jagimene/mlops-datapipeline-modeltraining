@@ -47,9 +47,7 @@ class FeRisk():
     def __init__(self, args) -> None:
         self.args = args 
         self.logger = LoggingInit(logging.INFO).logger
-        self.logger.info("info message")
-        self.logger.warn("warn message")
-        self.logger.error("error message")
+        self.logger.info("Init Process")        
         pass
 
     def read_data(self):
