@@ -16,4 +16,4 @@ RUN apt-get clean
 ENV PYTHONUNBUFFERED=TRUE
 ENV PYTHONDONTWRITEBYTECODE=TRUE 
 
-ENTRYPOINT ["python3", "/app/processing.py"]
+ENTRYPOINT ["python3", "/app/training.py"]
