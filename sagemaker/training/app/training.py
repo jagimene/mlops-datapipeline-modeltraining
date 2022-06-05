@@ -9,26 +9,7 @@ from sklearn.metrics import (
     accuracy_score, confusion_matrix, precision_score
 )
 from joblib import dump
-
-class LoggingInit():
-    @property
-    def logger(self):
-        return self._logger
-
-    def __init__(self, level=logging.DEBUG, msg_format= '%(asctime)s %(levelname)s %(name)s: %(message)s', date_format= '%Y-%m-%d %H:%M:%S') -> None:
-        self.msg_format = msg_format
-        self.date_format = date_format
-        self.level = level            
-        self._logger=self.set_logging()
-        pass
-    
-    def set_logging(self):
-        logging.basicConfig(format=self.msg_format, datefmt=self.date_format, stream=sys.stdout)
-        logger = logging.getLogger()        
-        logger.setLevel(self.level)
-        logger.info("Logger Initializated")
-        return (logger)
-
+from .utils import LoggingInit
 
 class Training():
     @property
@@ -106,8 +87,11 @@ class Training():
         
     
     def main(self):
+        #load train test data
         X_train, y_train, X_test, y_test = self.load_train_test_data()
+        #train model and get metrics
         model, model_metrics = self.train(X_train, y_train, X_test, y_test)
+        #save model artifact and model metrics
         self.save_model(model, model_metrics)
 
 

@@ -5,26 +5,7 @@ import logging
 
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-
-class LoggingInit():
-    @property
-    def logger(self):
-        return self._logger
-
-    def __init__(self, level=logging.DEBUG, msg_format= '%(asctime)s %(levelname)s %(name)s: %(message)s', date_format= '%Y-%m-%d %H:%M:%S') -> None:
-        self.msg_format = msg_format
-        self.date_format = date_format
-        self.level = level            
-        self._logger=self.set_logging()
-        pass
-    
-    def set_logging(self):
-        logging.basicConfig(format=self.msg_format, datefmt=self.date_format, stream=sys.stdout)
-        logger = logging.getLogger()        
-        logger.setLevel(self.level)
-        logger.info("Logger Initializated")
-        return (logger)
-
+from .utils import LoggingInit
 
 class Processing():
     @property
@@ -94,12 +75,14 @@ class Processing():
         
     
     def main(self):
+        #load dataset
         cust_df = self.load_fix_types()
+        #split data for train and test
         (X_train, X_test, y_train, y_test) = self.split_train_test(cust_df)
+        #save training and testing datasets
         self.save_split_df(X_train, X_test, y_train, y_test)
 
 
 if __name__=='__main__':
     processing = Processing()
-    print(processing.args)
     processing.main()
