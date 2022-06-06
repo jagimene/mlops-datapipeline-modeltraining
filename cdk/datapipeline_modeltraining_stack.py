@@ -21,11 +21,13 @@ class DatapipelineModeltrainingStack(Stack):
  
     def deploy_ecr_resource(self):
         ecr = EcrResources(self, "EcrResources", self.configurations)
-        sm_processing_uri = ecr.
+        sm_processing_uri = ecr.uri_img_processing
+        sm_training_uri = ecr.uri_img_training
 
     def deploy(self):        
         # Deploy all the construcs
         self.deploy_glue_resource()
+        self.deploy_ecr_resource()
         
 
        
