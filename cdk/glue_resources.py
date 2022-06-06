@@ -16,18 +16,22 @@ class GlueResources(Construct):
         
 
     def create_buckets(self):
-        
-        bucket_name_artifact = self.configurations['glue']['bucket_artifact']['name']
-        bucket_name_data = self.configurations['glue']['bucket_data']['name']
+        bucket_artifact_id = self.configurations['glue']['bucket_artifact']['name']
+        bucket_artifact_name = f"{self.project_name}-{bucket_artifact_id}"
+
+        bucket_data_id = self.configurations['glue']['bucket_data']['name']
+        bucket_data_name = f"{self.project_name}-{bucket_data_id}"      
 
         bucket_artifact = s3.Bucket(self, 
-                            f"{self.project_name }_{bucket_name_artifact}", 
+                            bucket_artifact_id,
+                            bucket_name=bucket_artifact_name,
                             versioned=False, 
                             block_public_access=s3.BlockPublicAccess.BLOCK_ALL)
         arn_bucket_artifact = bucket_artifact.bucket_arn
         
-        bucket_data = s3.Bucket(self, 
-                            f"{self.project_name }_{bucket_name_data}", 
+        bucket_data = s3.Bucket(self,
+                            bucket_data_id,
+                            bucket_name=bucket_data_name,
                             versioned=False, 
                             block_public_access=s3.BlockPublicAccess.BLOCK_ALL)
         arn_bucket_data = bucket_data.bucket_arn
