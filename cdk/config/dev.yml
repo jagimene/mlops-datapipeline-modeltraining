@@ -31,3 +31,18 @@ glue:
       exclusions: null  
       scheduleExpression: null  
       configuration: null
+
+ecr:
+  repo:
+    name: ecr_model
+    lifecycle_days: 10
+    tag_exclude: dev
+  
+  asset:
+    sm_processing:
+      name: model_processing
+      path: sagemaker/processing
+    sm_training:
+      name: model_training
+      path: sagemaker/training
+          
