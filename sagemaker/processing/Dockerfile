@@ -1,4 +1,4 @@
-FROM python:3.8.13-slim-buster
+FROM public.ecr.aws/bitnami/python:3.8.13
 
 # Copy a app folder and requirements
 COPY app/ /app/
