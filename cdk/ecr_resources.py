@@ -32,14 +32,12 @@ class EcrResources(Construct):
         lifecycle_days = self.configurations['ecr']['repo']['lifecycle_days']
         tag_exclude = self.configurations['ecr']['repo']['tag_exclude']
 
-        repo = ecr.Repository(self,
+        repo = ecr.Repository(self, #create repo
                                 id='ModelRepo',
-                                repository_name=name,
-                                lifecycle_rules=[
-                                    ecr.LifecycleRule.max_image_age(Duration.days(lifecycle_days),
-                                    ecr.LifecycleRule.tag_prefix_list(tag_exclude),
-                                )]
-                            )
+                                repository_name=name )
+        #config purge, and exclude tags                                
+        repo.add_lifecycle_rule(tag_prefix_list=[tag_exclude], max_image_count=9999)
+        repo.add_lifecycle_rule(max_image_age=Duration.days(lifecycle_days))
         return repo
     
     def _build_image(self):
@@ -74,7 +72,7 @@ class EcrResources(Construct):
     
     
     def _deploy(self):
-        self._repo= self.create_ecr_repo()
-        self._processing_img, self._training_img = self.build_image()
+        self._repo= self._create_ecr_repo()
+        self._processing_img, self._training_img = self._build_image()
         self._uri_img_processing = self._processing_img.image_uri
         self._uri_img_training = self._training_img.image_uri
