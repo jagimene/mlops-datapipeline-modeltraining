@@ -12,7 +12,7 @@ class ProjectEnvironment():
 
     def loadConfig(self):
         env = self.env
-        with open(f'config/{env}.yml', 'r') as stream:
+        with open(f'cdk/config/{env}.yml', 'r') as stream:
             try:
                 configurations = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
