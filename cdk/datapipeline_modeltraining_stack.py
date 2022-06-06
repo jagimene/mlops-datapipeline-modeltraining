@@ -1,3 +1,4 @@
+from telnetlib import EC
 from aws_cdk import (
     # Duration,
     Stack,
@@ -6,6 +7,7 @@ from aws_cdk import (
 from constructs import Construct
 
 from .glue_resources import GlueResources
+from .ecr_resources import EcrResources
 
 class DatapipelineModeltrainingStack(Stack):
 
@@ -13,16 +15,17 @@ class DatapipelineModeltrainingStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
         self.configurations = config_enviroment
 
-    def deploy_glue_resource(self):
+    def deploy_glue_resource(self):        
         glue = GlueResources(self, "GlueResources", self.configurations)
-        glue.deploy()
+        glue.deploy()    
+ 
+    def deploy_ecr_resource(self):
+        ecr = EcrResources(self, "EcrResources", self.configurations)
+        sm_processing_uri = ecr.
 
-    def deploy(self):
+    def deploy(self):        
+        # Deploy all the construcs
         self.deploy_glue_resource()
-        # The code that defines your stack goes here
+        
 
-        # example resource
-        # queue = sqs.Queue(
-        #     self, "DatapipelineModeltrainingQueue",
-        #     visibility_timeout=Duration.seconds(300),
-        # )
+       
