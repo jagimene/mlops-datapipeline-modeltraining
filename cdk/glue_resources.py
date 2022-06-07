@@ -56,7 +56,7 @@ class GlueResources(Construct):
         write_to_s3_policy = iam.PolicyDocument(
         statements=[iam.PolicyStatement(
             actions=["s3:GetObject","s3:PutObject"],                
-            resources=[self._arn_bucket_artifact, self._arn_bucket_artifact]
+            resources=[self._arn_bucket_data, self._arn_bucket_artifact]
             )] )              
 
         role = iam.Role(
