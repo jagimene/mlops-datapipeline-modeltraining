@@ -1,0 +1,48 @@
+projectName: mlops-data-modeltraining-dev 
+
+pipeline:
+    name: mlops-data-model-training-pipeline
+    github:
+      owner: "jagimene"
+      repo: "mlops-datapipeline-modeltraining"
+      branch: "dev"
+
+stack:
+    name: mlops-datapipeline-modeltrain-Stack
+    tags:
+        - key: project
+          value: mlops_challenge
+        - key: owners
+          value: jesusariel.gimenez@gmail.com
+        - key: environment
+          value: dev
+
+glue:
+    bucket_artifact:
+      name: artifact
+    bucket_data:
+      name: data
+    database_ml:
+      name: ml_db
+    crawler_features:
+      name: fe_risk
+      s3Path: tables/fe_risk
+      tablePrefix: null  
+      exclusions: null  
+      scheduleExpression: null  
+      configuration: null
+
+ecr:
+  repo:
+    name: ecr_model
+    lifecycle_days: 10
+    tag_exclude: dev
+  
+  asset:
+    sm_processing:
+      name: model_processing
+      path: sagemaker/processing
+    sm_training:
+      name: model_training
+      path: sagemaker/training
+    
