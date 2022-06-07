@@ -44,15 +44,17 @@ class CsvToParquet():
 
     def read_data(self):
         self.logger.info("reading csv file into sparkDF")
-        sparkDF = self.spark.read.options(header='True', inferSchema='True', delimiter=',').csv("s3://mlops-challenge-rawdata/tables/csv/fe_risk.csv")
+        source_uri = self.args['source_uri']               
+        sparkDF = self.spark.read.options(header='True', inferSchema='True', delimiter=',').csv(source_uri)
         sparkDF.printSchema()
         return sparkDF
 
     def save_parquet(self, sparkDF):        
         self.logger.info("Repartition and save as parquet")
+        output_uri = self.args['output_uri']
         sparkDF= sparkDF.withColumn("loan_date", f.from_unixtime(f.unix_timestamp(sparkDF.loan_date), "yyyy-MM-dd"))        
-        sparkDF = sparkDF.repartition('loan_date')
-        sparkDF.write.mode('overwrite').format('parquet').partitionBy('loan_date').save('s3://mlops-challenge-rawdata/tables/fe_risk/')  
+        sparkDF = sparkDF.repartition('loan_date')        
+        sparkDF.write.mode('overwrite').format('parquet').partitionBy('loan_date').save(output_uri)  
 
     def main(self):
         sparkDF = self.read_data()        
@@ -60,14 +62,10 @@ class CsvToParquet():
         
         self.job.commit()
 
-if __name__ == "__main__":
-    """my_args = ['JOB_NAME',
-                'day_partition_key',
-                'hour_partition_key',
-                'day_partition_value',
-                'hour_partition_value']"""
-
-    my_args = ['JOB_NAME']
+if __name__ == "__main__":    
+    my_args = ['JOB_NAME',
+                'source_uri',
+                'output_uri']    
     parser = argsGet(my_args)
     args = parser.loaded_args
 

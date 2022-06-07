@@ -52,7 +52,8 @@ class FeRisk():
 
     def read_data(self):
         self.logger.info("loading csv file")
-        df = pd.read_csv('s3://mlops-challenge-rawdata/dataset_credit_risk.csv')
+        input_uri=self.args['source_uri']
+        df = pd.read_csv(f'{input_uri}')
         shape = df.shape
         print(shape)
         self.logger.info("load success")
@@ -92,11 +93,13 @@ class FeRisk():
 
     def save_features(self, df):
         self.logger.info("Store all data to process later and save as parquet")
-        df.to_csv('s3://mlops-challenge-rawdata/tables/csv/fe_risk.csv', index=False)
+        output_uri_csv=self.args['output_uri_csv']
+        output_uri_train=self.args['output_uri_train']        
+        df.to_csv(output_uri_csv, index=False)
 
         self.logger.info("Store data for training model csv")
-        df = df[['id', 'age', 'years_on_the_job', 'nb_previous_loans', 'avg_amount_loans_previous', 'flag_own_car', 'status']]
-        df.to_csv('s3://mlops-challenge-rawdata/train_model.csv', index=False)
+        df = df[['id', 'age', 'years_on_the_job', 'nb_previous_loans', 'avg_amount_loans_previous', 'flag_own_car', 'status']]        
+        df.to_csv(output_uri_train, index=False)
         pass
 
     def main(self):
@@ -107,13 +110,12 @@ class FeRisk():
         
 
 if __name__ == "__main__":
-    """my_args = ['JOB_NAME',
-                'day_partition_key',
-                'hour_partition_key',
-                'day_partition_value',
-                'hour_partition_value']"""
-
-    my_args = ['JOB_NAME']
+    #my_args = ['JOB_NAME']
+    my_args = ['JOB_NAME',
+                'source_uri',
+                'output_uri_csv',
+                'output_uri_train']
+    
     parser = ArgsGet(my_args)
     args = parser.loaded_args
 
