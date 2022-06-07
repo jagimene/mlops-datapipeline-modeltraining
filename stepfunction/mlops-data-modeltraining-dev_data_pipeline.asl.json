@@ -1,0 +1,143 @@
+{
+  "Comment": "Data Pipeline and Model Training",
+  "StartAt": "FE_raw_to_csv",
+  "States": {
+    "FE_raw_to_csv": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Parameters": {
+        "JobName.$": "$.glue_job.fe_csv.name",
+        "Arguments": {
+          "--source_uri.$": "$.glue_job.fe_csv.args.source_uri",
+          "--output_uri_csv.$": "$.glue_job.fe_csv.args.output_uri_csv",
+          "--output_uri_train.$": "$.glue_job.fe_csv.args.output_uri_train"
+        }
+      },
+      "Next": "FE_csvtoparquet",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Comment": "Glue error",
+          "Next": "Fail msg"
+        }
+      ],
+      "ResultPath": null
+    },
+    "Fail msg": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message.$": "$",
+        "TopicArn": "arn:aws:sns:us-east-1:829825986145:mlops-data-modeltraining-dev"
+      },
+      "Next": "Fail"
+    },
+    "Fail": {
+      "Type": "Fail"
+    },
+    "FE_csvtoparquet": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::glue:startJobRun.sync",
+      "Parameters": {
+        "JobName.$": "$.glue_job.fe_parquet.name",
+        "Arguments": {
+          "--source_uri.$": "$.glue_job.fe_parquet.args.source_uri",
+          "--output_uri.$": "$.glue_job.fe_parquet.args.output_uri"
+        }
+      },
+      "Next": "FeRisk",
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "Comment": "Glue Error",
+          "Next": "Fail msg"
+        }
+      ],
+      "ResultPath": null
+    },
+    "FeRisk": {
+      "Type": "Task",
+      "Parameters": {
+        "Name.$": "$.glue_crawler.fe_risk.name"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Next": "Wait 30s",
+      "ResultPath": null
+    },
+    "Wait 30s": {
+      "Type": "Wait",
+      "Seconds": 5,
+      "Next": "FeRiskStatus"
+    },
+    "FeRiskStatus": {
+      "Type": "Task",
+      "Parameters": {
+        "Name.$": "$.glue_crawler.fe_risk.name"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:glue:getCrawler",
+      "ResultSelector": {
+        "crawler_name.$": "$.Crawler.Name",
+        "crawler_state.$": "$.Crawler.State"
+      },
+      "ResultPath": "$.crawler_status",
+      "Next": "crawler still running?"
+    },
+    "crawler still running?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.crawler_status.crawler_state",
+          "StringEquals": "RUNNING",
+          "Next": "Wait 30s"
+        }
+      ],
+      "Default": "Preprocess Model Data"
+    },
+    "Preprocess Model Data": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob",
+      "Parameters": {
+        "ProcessingInputs.$": "$.sagemaker.preprocessing.ProcessingInputs",
+        "ProcessingOutputConfig.$": "$.sagemaker.preprocessing.ProcessingOutputConfig",
+        "ProcessingJobName.$": "$.sagemaker.preprocessing.ProcessingJobName",
+        "ProcessingResources.$": "$.sagemaker.preprocessing.ProcessingResources",
+        "StoppingCondition.$": "$.sagemaker.preprocessing.StoppingCondition",
+        "AppSpecification.$": "$.sagemaker.preprocessing.AppSpecification",
+        "NetworkConfig.$": "$.sagemaker.preprocessing.NetworkConfig",
+        "RoleArn.$": "$.sagemaker.preprocessing.RoleArn"
+      },
+      "Next": "Model Training"
+    },
+    "Model Training": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob",
+      "Parameters": {
+        "ProcessingInputs.$": "$.sagemaker.training.ProcessingInputs",
+        "ProcessingOutputConfig.$": "$.sagemaker.training.ProcessingOutputConfig",
+        "ProcessingJobName.$": "$.sagemaker.training.ProcessingJobName",
+        "ProcessingResources.$": "$.sagemaker.training.ProcessingResources",
+        "StoppingCondition.$": "$.sagemaker.training.StoppingCondition",
+        "AppSpecification.$": "$.sagemaker.training.AppSpecification",
+        "NetworkConfig.$": "$.sagemaker.training.NetworkConfig",
+        "RoleArn.$": "$.sagemaker.training.RoleArn"
+      },
+      "Next": "Success msg"
+    },
+    "Success msg": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message.$": "$",
+        "TopicArn": "arn:aws:sns:us-east-1:829825986145:mlops-data-modeltraining-dev"
+      },
+      "Next": "Success"
+    },
+    "Success": {
+      "Type": "Succeed"
+    }
+  }
+}

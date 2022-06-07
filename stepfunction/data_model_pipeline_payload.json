@@ -1,0 +1,205 @@
+{
+    "glue_job": {
+        "fe_csv":{
+            "name": "fee_risk",
+            "args": {
+                "source_uri": "s3://mlops-data-modeltraining-raw-data/dataset_credit_risk.csv",
+                "output_uri_csv": "s3://mlops-data-modeltraining-dev-data/csv/fe_risk.csv",
+                "output_uri_train": "s3://mlops-data-modeltraining-dev-data/train/train_model.csv"
+            }
+        },
+        "fe_parquet":{
+            "name": "test_fe_job",
+            "args": {
+                "source_uri": "s3://mlops-data-modeltraining-dev-data/csv/fe_risk.csv",
+                "output_uri": "s3://mlops-data-modeltraining-dev-data/tables/fe_risk/"
+            }
+        }
+    },
+    "glue_crawler":{
+        "fe_risk":{
+            "name": "mlops-data-modeltraining-dev_fe_risk"
+        }
+    },
+    "sagemaker":{
+        "preprocessing":{
+            "ProcessingInputs":[
+                {
+                  "InputName": "input-data",
+                  "AppManaged": false,
+                  "S3Input": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-data/train/train_model.csv",
+                    "LocalPath": "/opt/ml/processing/input/",
+                    "S3DataType": "S3Prefix",
+                    "S3InputMode": "File",
+                    "S3DataDistributionType": "FullyReplicated",
+                    "S3CompressionType": "None"
+                  }
+                }],
+            "ProcessingOutputConfig":{"Outputs": [
+                {
+                  "OutputName": "train_data",
+                  "S3Output": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/train_data.csv",
+                    "LocalPath": "/opt/ml/processing/output/train_data.csv",
+                    "S3UploadMode": "EndOfJob"
+                  },
+                  "AppManaged": false
+                },
+                {
+                  "OutputName": "train_target",
+                  "S3Output": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/train_target.csv",
+                    "LocalPath": "/opt/ml/processing/output/train_target.csv",
+                    "S3UploadMode": "EndOfJob"
+                  },
+                  "AppManaged": false
+                },
+                {
+                  "OutputName": "test_data",
+                  "S3Output": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/test_data.csv",
+                    "LocalPath": "/opt/ml/processing/output/test_data.csv",
+                    "S3UploadMode": "EndOfJob"
+                  },
+                  "AppManaged": false
+                },
+                {
+                  "OutputName": "test_target",
+                  "S3Output": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/test_target.csv",
+                    "LocalPath": "/opt/ml/processing/output/test_target.csv",
+                    "S3UploadMode": "EndOfJob"
+                  },
+                  "AppManaged": false
+                }
+              ]},
+            "ProcessingJobName":"mlops-data-modeltraining-dev-000",
+            "ProcessingResources":{
+                "ClusterConfig": {
+                  "InstanceCount": 1,
+                  "InstanceType": "ml.r5.xlarge",
+                  "VolumeSizeInGB": 30
+                }
+              },
+            "StoppingCondition":{
+                "MaxRuntimeInSeconds": 10000
+              },
+            "AppSpecification":{
+                "ImageUri": "829825986145.dkr.ecr.us-east-1.amazonaws.com/cdk-hnb659fds-container-assets-829825986145-us-east-1:3dcf875a5c51bdf38509952fea3f2e1372cafc29c106baa5f86a8e2d08f1cc01",
+                "ContainerEntrypoint": [
+                  "python3",
+                  "/app/processing.py"
+                ],
+                "ContainerArguments": [
+                  "data-file",
+                  "train_model.csv"
+                ]
+              },
+            "NetworkConfig":{
+                "EnableInterContainerTrafficEncryption": false,
+                "EnableNetworkIsolation": false
+              },
+            "RoleArn":"arn:aws:iam::829825986145:role/service-role/AmazonSageMaker-ExecutionRole-20220424T173630"
+        },
+        "training":{
+            "ProcessingInputs":[
+                {
+                  "InputName": "input-data",
+                  "AppManaged": false,
+                  "S3Input": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-data/train/train_model.csv",
+                    "LocalPath": "/opt/ml/processing/input/",
+                    "S3DataType": "S3Prefix",
+                    "S3InputMode": "File",
+                    "S3DataDistributionType": "FullyReplicated",
+                    "S3CompressionType": "None"
+                  }
+                },
+                {
+                    "InputName": "train_target",
+                    "AppManaged": false,
+                    "S3Input": {
+                      "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/train_target.csv",
+                      "LocalPath": "/opt/ml/processing/input/",
+                      "S3DataType": "S3Prefix",
+                      "S3InputMode": "File",
+                      "S3DataDistributionType": "FullyReplicated",
+                      "S3CompressionType": "None"
+                    }
+                  },
+                  {
+                    "InputName": "test_data",
+                    "AppManaged": false,
+                    "S3Input": {
+                      "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/test_data.csv",
+                      "LocalPath": "/opt/ml/processing/input/",
+                      "S3DataType": "S3Prefix",
+                      "S3InputMode": "File",
+                      "S3DataDistributionType": "FullyReplicated",
+                      "S3CompressionType": "None"
+                    }
+                  },
+                  {
+                    "InputName": "test_target",
+                    "AppManaged": false,
+                    "S3Input": {
+                      "S3Uri": "s3://mlops-data-modeltraining-dev-data/train_output/test_target.csv",
+                      "LocalPath": "/opt/ml/processing/input/",
+                      "S3DataType": "S3Prefix",
+                      "S3InputMode": "File",
+                      "S3DataDistributionType": "FullyReplicated",
+                      "S3CompressionType": "None"
+                    }
+                  }],
+            "ProcessingOutputConfig":{"Outputs": [
+                {
+                  "OutputName": "model_artifact",
+                  "S3Output": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-artifact/trained_model/model_risk.joblib",
+                    "LocalPath": "/opt/ml/processing/output/model_risk.joblib",
+                    "S3UploadMode": "EndOfJob"
+                  },
+                  "AppManaged": false
+                },
+                {
+                  "OutputName": "model_metrics",
+                  "S3Output": {
+                    "S3Uri": "s3://mlops-data-modeltraining-dev-artifact/trained_model/model_metrics.json",
+                    "LocalPath": "/opt/ml/processing/output/model_metrics.json",
+                    "S3UploadMode": "EndOfJob"
+                  },
+                  "AppManaged": false
+                }
+              ]},
+            "ProcessingJobName":"mlops-data-modeltraining-train-dev-000",
+            "ProcessingResources":{
+                "ClusterConfig": {
+                  "InstanceCount": 1,
+                  "InstanceType": "ml.r5.xlarge",
+                  "VolumeSizeInGB": 30
+                }
+              },
+            "StoppingCondition":{
+                "MaxRuntimeInSeconds": 10000
+              },
+            "AppSpecification":{
+                "ImageUri": "829825986145.dkr.ecr.us-east-1.amazonaws.com/cdk-hnb659fds-container-assets-829825986145-us-east-1:799034735791af8fd3a06216f6ec7b4be3160648c4feae558fce657e5bb2d261",
+                "ContainerEntrypoint": [
+                  "python3",
+                  "/app/training.py"
+                ],
+                "ContainerArguments": [
+                  "data-file",
+                  "train_model.csv"
+                ]
+              },
+            "NetworkConfig":{
+                "EnableInterContainerTrafficEncryption": false,
+                "EnableNetworkIsolation": false
+              },
+            "RoleArn":"arn:aws:iam::829825986145:role/service-role/AmazonSageMaker-ExecutionRole-20220424T173630"
+        }
+    }
+
+}
