@@ -5,7 +5,7 @@ import logging
 
 from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
-from .utils import LoggingInit
+from utils import LoggingInit
 
 class Processing():
     @property

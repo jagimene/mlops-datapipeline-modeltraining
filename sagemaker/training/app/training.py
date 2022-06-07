@@ -9,7 +9,7 @@ from sklearn.metrics import (
     accuracy_score, confusion_matrix, precision_score
 )
 from joblib import dump
-from .utils import LoggingInit
+from utils import LoggingInit
 
 class Training():
     @property
