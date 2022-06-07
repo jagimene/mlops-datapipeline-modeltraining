@@ -11,20 +11,20 @@ account = Aws.ACCOUNT_ID
 from constructs import Construct  
 
 class EcrResources(Construct):
-    @property
-    def uri_img_training(self):
-        return self._uri_img_training
-
-    @property
-    def uri_img_processing(self):
-        return self._uri_img_processing
-
     def __init__(self, scope: Construct, id: str, configurations: dict, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         self.configurations = configurations
         self.project_name = self.configurations['projectName']
         self._deploy()
+        
+    @property
+    def uri_img_training(self):
+        return self._uri_img_training
+
+    @property
+    def uri_img_processing(self):
+        return self._uri_img_processing       
         
 
     def _create_ecr_repo(self):
