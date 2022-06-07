@@ -1,7 +1,7 @@
 projectName: mlops-data-modeltraining-prod
 
 pipeline:
-    name: mlops-data-modeltraining-pipeline
+    name: mlops-data-model-training-pipeline
     github:
       owner: "jagimene"
       repo: "mlops-datapipeline-modeltraining"
