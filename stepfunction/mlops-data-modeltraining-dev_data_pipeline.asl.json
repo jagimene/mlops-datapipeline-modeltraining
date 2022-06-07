@@ -1,7 +1,18 @@
 {
   "Comment": "Data Pipeline and Model Training",
-  "StartAt": "FE_raw_to_csv",
+  "StartAt": "run_only_training",
   "States": {
+    "run_only_training": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.run_only_training",
+          "IsPresent": true,
+          "Next": "Preprocess Model Data"
+        }
+      ],
+      "Default": "FE_raw_to_csv"
+    },
     "FE_raw_to_csv": {
       "Type": "Task",
       "Resource": "arn:aws:states:::glue:startJobRun.sync",
@@ -99,7 +110,7 @@
     },
     "Preprocess Model Data": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::sagemaker:createProcessingJob",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
       "Parameters": {
         "ProcessingInputs.$": "$.sagemaker.preprocessing.ProcessingInputs",
         "ProcessingOutputConfig.$": "$.sagemaker.preprocessing.ProcessingOutputConfig",
@@ -108,13 +119,14 @@
         "StoppingCondition.$": "$.sagemaker.preprocessing.StoppingCondition",
         "AppSpecification.$": "$.sagemaker.preprocessing.AppSpecification",
         "NetworkConfig.$": "$.sagemaker.preprocessing.NetworkConfig",
-        "RoleArn.$": "$.sagemaker.preprocessing.RoleArn"
+        "RoleArn.$": "$.sagemaker.training.RoleArn"
       },
-      "Next": "Model Training"
+      "Next": "Model Training",
+      "ResultPath": null
     },
     "Model Training": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::sagemaker:createProcessingJob",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
       "Parameters": {
         "ProcessingInputs.$": "$.sagemaker.training.ProcessingInputs",
         "ProcessingOutputConfig.$": "$.sagemaker.training.ProcessingOutputConfig",

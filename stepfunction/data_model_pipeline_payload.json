@@ -1,4 +1,5 @@
 {
+    "run_only_training": true,
     "glue_job": {
         "fe_csv":{
             "name": "fee_risk",
@@ -78,7 +79,7 @@
             "ProcessingResources":{
                 "ClusterConfig": {
                   "InstanceCount": 1,
-                  "InstanceType": "ml.r5.xlarge",
+                  "InstanceType": "ml.t3.medium",
                   "VolumeSizeInGB": 30
                 }
               },
@@ -176,7 +177,7 @@
             "ProcessingResources":{
                 "ClusterConfig": {
                   "InstanceCount": 1,
-                  "InstanceType": "ml.r5.xlarge",
+                  "InstanceType": "ml.t3.medium",
                   "VolumeSizeInGB": 30
                 }
               },
