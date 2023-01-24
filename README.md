@@ -94,7 +94,6 @@ Repo Structure
 │   ├── MLOps_Challenge
 │   │   ├── MLE_challenge - Features engineering - Notebook 1.ipynb
 │   │   ├── MLE_challenge - Training model - Notebook 2.ipynb
-│   │   ├── MLOps_Technical_Challenge_Kueski.pdf
 │   ├── architecture                        
 │   │   └── MLOps.drawio.png
 │   └── img
